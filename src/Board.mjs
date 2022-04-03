@@ -2,7 +2,7 @@ export class Board {
   width;
   height;
   grid;
-  fallingBlock;
+  fallingBlock = null;
 
   constructor(width, height) {
     this.width = width;
@@ -52,12 +52,19 @@ export class Board {
     // update coord
     this.fallingBlock.row += 1;
 
-    // move down
     const newRow = this.fallingBlock.row;
-    this.grid[newRow][currentColorCol] = this.fallingBlock.color;
+    // check if we have landed
+    if (newRow > this.height - 1) {
+      this.fallingBlock = null;
+    } else {
+      // move down
+      this.grid[newRow][currentColorCol] = this.fallingBlock.color;
+    }
   }
 
-  hasFalling() {}
+  hasFalling() {
+    return Boolean(this.fallingBlock);
+  }
 
   toString() {
     return this.grid.flat().join("");

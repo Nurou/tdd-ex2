@@ -25,6 +25,10 @@ export class Board {
     this.grid = grid;
   }
 
+  drop(block) {
+    this.grid[0][1] = block.color;
+  }
+
   toString() {
     return this.grid.flat().join("");
   }

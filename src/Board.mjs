@@ -27,6 +27,10 @@ export class Board {
   }
 
   drop(block) {
+    if (this.fallingBlock) {
+      throw "already falling";
+    }
+
     const INITIAL_ROW_INDEX = 0;
     const INITIAL_COL_INDEX = 1;
 

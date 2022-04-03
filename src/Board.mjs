@@ -46,9 +46,6 @@ export class Board {
     const currentColorRow = this.fallingBlock.row;
     const currentColorCol = this.fallingBlock.col;
 
-    // overwrite current
-    this.grid[currentColorRow][currentColorCol] = ".";
-
     // update coord
     this.fallingBlock.row += 1;
 
@@ -57,6 +54,8 @@ export class Board {
     if (newRow > this.height - 1) {
       this.fallingBlock = null;
     } else {
+      // overwrite current
+      this.grid[currentColorRow][currentColorCol] = ".";
       // move down
       this.grid[newRow][currentColorCol] = this.fallingBlock.color;
     }

@@ -100,15 +100,15 @@ describe("Falling blocks", () => {
       ).to.be.true;
     });
 
-    // xit("it stops when it hits the other block", () => {
-    //   board.tick();
+    it("it stops when it hits the other block", () => {
+      board.tick();
 
-    //   expect(board.toString()).to.equalShape(
-    //     `...
-    //      .Y.
-    //      .X.`
-    //   );
-    //   expect(board.hasFalling(), "the block should stop moving").to.be.false;
-    // });
+      expect(board.toString()).to.equalShape(
+        `...
+         .Y.
+         .X.`
+      );
+      expect(board.hasFalling(), "the block should stop moving").to.be.false;
+    });
   });
 });

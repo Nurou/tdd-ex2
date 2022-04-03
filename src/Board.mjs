@@ -43,21 +43,25 @@ export class Board {
   }
 
   tick() {
-    const currentColorRow = this.fallingBlock.row;
-    const currentColorCol = this.fallingBlock.col;
+    const currentColorRowIndex = this.fallingBlock.row;
+    const currentColorColIndex = this.fallingBlock.col;
 
-    // update coord
-    this.fallingBlock.row += 1;
+    const newRowIndex = this.fallingBlock.row + 1;
+    const bottomRowIndex = this.height - 1;
 
-    const newRow = this.fallingBlock.row;
-    // check if we have landed
-    if (newRow > this.height - 1) {
+    if (newRowIndex > bottomRowIndex) {
+      // landed on bottom rom
+      this.fallingBlock = null;
+    } else if (this.grid[newRowIndex][currentColorColIndex] !== ".") {
+      // landed on another block
       this.fallingBlock = null;
     } else {
       // overwrite current
-      this.grid[currentColorRow][currentColorCol] = ".";
+      this.grid[currentColorRowIndex][currentColorColIndex] = ".";
       // move down
-      this.grid[newRow][currentColorCol] = this.fallingBlock.color;
+      this.grid[newRowIndex][currentColorColIndex] = this.fallingBlock.color;
+      // update coords
+      this.fallingBlock.row += 1;
     }
   }
 

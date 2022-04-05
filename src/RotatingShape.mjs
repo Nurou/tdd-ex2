@@ -8,28 +8,25 @@ export class RotatingShape {
   }
 
   rotateRight() {
-    let splitAndTrimmed = this.shape.split("\n").map((s) => s.trim());
+    let splitAndTrimmed = splitAndTrim(this.shape);
 
-    let strs = [];
+    let correctlyGroupedStrings = formGroups(splitAndTrimmed);
 
-    splitAndTrimmed.forEach((str, i) => {
-      let chars = str.split("");
-      chars.forEach((char, j) => {
-        strs[j] = strs[j] ? strs[j].concat(char) : char;
-      });
-    });
+    let rightRotated = correctlyGroupedStrings
+      .map((str, i) => reverse(str))
+      .join("\n");
 
-    strs = strs
-      .map((str, i) => {
-        if (i === strs.length - 1) {
-          return reverse(str);
-        } else {
-          return reverse(str).concat("\n");
-        }
-      })
-      .join("");
+    return new RotatingShape(rightRotated);
+  }
 
-    return new RotatingShape(strs);
+  rotateLeft() {
+    let splitAndTrimmed = splitAndTrim(this.shape);
+
+    let correctlyGroupedStrings = formGroups(splitAndTrimmed);
+
+    let leftRotated = correctlyGroupedStrings.reverse().join("\n");
+
+    return new RotatingShape(leftRotated);
   }
 
   toString() {
@@ -39,4 +36,21 @@ export class RotatingShape {
 
 function reverse(s) {
   return s.split("").reverse().join("");
+}
+
+function splitAndTrim(s) {
+  return s.split("\n").map((s) => s.trim());
+}
+
+function formGroups(stringArr) {
+  let strs = [];
+
+  stringArr.forEach((str, i) => {
+    let chars = str.split("");
+    chars.forEach((char, j) => {
+      strs[j] = strs[j] ? strs[j].concat(char) : char;
+    });
+  });
+
+  return strs;
 }

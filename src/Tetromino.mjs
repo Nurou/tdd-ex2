@@ -14,8 +14,8 @@ export class Tetromino {
     }
   }
 
-  toString() {
-    return this.shape;
+  rotateRight() {
+    return new RotatingShape(this.shape).rotateRight().shape;
   }
 
   generateTShape() {
@@ -24,5 +24,9 @@ export class Tetromino {
       TTT
       ...`
     ).shape;
+  }
+
+  toString() {
+    return this.shape;
   }
 }

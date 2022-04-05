@@ -1,7 +1,7 @@
 import { RotatingShape } from "./RotatingShape.mjs";
 
 export class Tetromino {
-  static T_SHAPE = new Tetromino("T");
+  static T_SHAPE = new Tetromino("T").shape;
   shape;
 
   constructor(shape) {
@@ -27,7 +27,7 @@ export class Tetromino {
       `.T.
       TTT
       ...`
-    ).shape;
+    );
   }
 
   toString() {

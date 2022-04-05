@@ -3,7 +3,7 @@ export class RotatingShape {
   constructor(shape) {
     this.shape = shape
       .split("\n")
-      .map((s, i) => s.trim().concat("\n"))
+      .map((s) => s.trim().concat("\n"))
       .join("");
   }
 
@@ -13,7 +13,7 @@ export class RotatingShape {
     let correctlyGroupedStrings = formGroups(splitAndTrimmed);
 
     let rightRotated = correctlyGroupedStrings
-      .map((str, i) => reverse(str))
+      .map((str) => reverse(str))
       .join("\n");
 
     return new RotatingShape(rightRotated);

@@ -19,6 +19,14 @@ export class Tetromino {
     0,
     []
   );
+  static O_SHAPE = new Tetromino(
+    `.OO
+    .OO
+    ...`,
+    1,
+    0,
+    []
+  );
 
   shape;
   orientations = [];

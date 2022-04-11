@@ -20,13 +20,10 @@ export class RotatingShape {
   }
 
   rotateLeft() {
-    let splitAndTrimmed = splitAndTrim(this.shape);
-
-    let correctlyGroupedStrings = formGroups(splitAndTrimmed);
-
-    let leftRotated = correctlyGroupedStrings.reverse().join("\n");
-
-    return new RotatingShape(leftRotated);
+    return new RotatingShape(this.shape)
+      .rotateRight()
+      .rotateRight()
+      .rotateRight();
   }
 
   toString() {
@@ -39,7 +36,9 @@ function reverse(s) {
 }
 
 function splitAndTrim(s) {
-  return s.split("\n").map((s) => s.trim());
+  let res = s.split("\n").map((s) => s.trim());
+  res.pop();
+  return res;
 }
 
 function formGroups(stringArr) {

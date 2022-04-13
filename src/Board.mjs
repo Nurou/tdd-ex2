@@ -1,7 +1,17 @@
+import { Block } from "./Block.mjs";
+import { Grid } from "./Grid.mjs";
+
+function rowIsEmpty(row) {
+  return row.every((char) => char === "." || char === ".\n");
+}
+
+function generateEmptyRow(width) {
+  return [...Array(width)].map((_, i) => (i === width - 1 ? ".\n" : "."));
+}
 export class Board {
   width;
   height;
-  grid;
+  boardGrid;
   fallingBlock = null;
 
   constructor(width, height) {
@@ -23,7 +33,7 @@ export class Board {
       grid.push(currentRow);
     }
 
-    this.grid = grid;
+    this.boardGrid = grid;
   }
 
   drop(block) {
@@ -31,37 +41,61 @@ export class Board {
       throw "already falling";
     }
 
-    const INITIAL_ROW_INDEX = 0;
-    const INITIAL_COL_INDEX = 1;
+    let shapeGrid;
+    if (block instanceof Block) {
+      shapeGrid = new Grid(block.color, this.width);
+    } else {
+      shapeGrid = new Grid(block.shape, this.width);
+    }
+
+    const initialEndRowIndex = shapeGrid.grid.length - 1;
 
     this.fallingBlock = {
-      ...block,
-      row: INITIAL_ROW_INDEX,
-      col: INITIAL_COL_INDEX,
+      shapeGrid,
+      currentBottomRow: initialEndRowIndex,
     };
-    this.grid[INITIAL_ROW_INDEX][INITIAL_COL_INDEX] = block.color;
+
+    if (shapeGrid.grid.length == 1) {
+      this.boardGrid[0] = shapeGrid.grid[0];
+    } else {
+      for (let i = 0; i < shapeGrid.grid.length; i++) {
+        this.boardGrid[i] = shapeGrid.grid[i];
+      }
+    }
   }
 
   tick() {
-    const currentColorRowIndex = this.fallingBlock.row;
-    const currentColorColIndex = this.fallingBlock.col;
+    const bottomRowIndexOfShape = this.fallingBlock.currentBottomRow;
 
-    const newRowIndex = this.fallingBlock.row + 1;
-    const bottomRowIndex = this.height - 1;
+    const newIndex = bottomRowIndexOfShape + 1;
 
-    if (newRowIndex > bottomRowIndex) {
+    if (newIndex > this.height - 1) {
       // landed on bottom rom
       this.fallingBlock = null;
-    } else if (this.grid[newRowIndex][currentColorColIndex] !== ".") {
+    } else if (!rowIsEmpty(this.boardGrid[newIndex])) {
       // landed on another block
       this.fallingBlock = null;
     } else {
-      // overwrite current
-      this.grid[currentColorRowIndex][currentColorColIndex] = ".";
-      // move down
-      this.grid[newRowIndex][currentColorColIndex] = this.fallingBlock.color;
-      // update coords
-      this.fallingBlock.row += 1;
+      const emptyRow = generateEmptyRow(this.width);
+
+      const startIndex =
+        this.fallingBlock.currentBottomRow -
+        this.fallingBlock.shapeGrid.grid.length +
+        1;
+
+      if (this.fallingBlock.shapeGrid.grid.length == 1) {
+        const shapeEndIndex = this.fallingBlock.currentBottomRow;
+
+        this.boardGrid[shapeEndIndex] = emptyRow;
+        this.boardGrid[shapeEndIndex + 1] = this.fallingBlock.shapeGrid.grid[0];
+      } else {
+        for (let i = startIndex; i < this.fallingBlock.currentBottomRow; i++) {
+          this.boardGrid[i] = emptyRow;
+          this.boardGrid[i + 1] = this.fallingBlock.shapeGrid.grid[i];
+        }
+      }
+
+      this.fallingBlock.currentBottomRow += 1;
     }
   }
 
@@ -70,6 +104,6 @@ export class Board {
   }
 
   toString() {
-    return this.grid.flat().join("");
+    return this.boardGrid.flat().join("");
   }
 }

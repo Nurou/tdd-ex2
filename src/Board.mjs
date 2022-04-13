@@ -65,9 +65,11 @@ export class Board {
   }
 
   tick() {
-    const bottomRowIndexOfShape = this.fallingBlock.currentBottomRow;
+    if (!this.fallingBlock) return;
 
-    const newIndex = bottomRowIndexOfShape + 1;
+    const endRowIndexOfShape = this.fallingBlock.currentBottomRow;
+    const newIndex = endRowIndexOfShape + 1;
+    const emptyRow = generateEmptyRow(this.width);
 
     if (newIndex > this.height - 1) {
       // landed on bottom rom
@@ -76,8 +78,6 @@ export class Board {
       // landed on another block
       this.fallingBlock = null;
     } else {
-      const emptyRow = generateEmptyRow(this.width);
-
       const startIndex =
         this.fallingBlock.currentBottomRow -
         this.fallingBlock.shapeGrid.grid.length +
@@ -89,10 +89,8 @@ export class Board {
         this.boardGrid[shapeEndIndex] = emptyRow;
         this.boardGrid[shapeEndIndex + 1] = this.fallingBlock.shapeGrid.grid[0];
       } else {
-        for (let i = startIndex; i < this.fallingBlock.currentBottomRow; i++) {
-          this.boardGrid[i] = emptyRow;
-          this.boardGrid[i + 1] = this.fallingBlock.shapeGrid.grid[i];
-        }
+        this.boardGrid.splice(newIndex, 1);
+        this.boardGrid.unshift(emptyRow);
       }
 
       this.fallingBlock.currentBottomRow += 1;

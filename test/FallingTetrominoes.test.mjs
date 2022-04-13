@@ -1,4 +1,3 @@
-/*
 import { expect } from "chai";
 import { Board } from "../src/Board.mjs";
 import { Tetromino } from "../src/Tetromino.mjs";
@@ -28,7 +27,7 @@ describe("Falling tetrominoes", () => {
     );
   });
 
-  xit("stop when they hit the bottom", () => {
+  it("stop when they hit the bottom", () => {
     board.drop(Tetromino.T_SHAPE);
     fallToBottom(board);
 
@@ -58,4 +57,3 @@ describe("Falling tetrominoes", () => {
     );
   });
 });
-*/

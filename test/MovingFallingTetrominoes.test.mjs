@@ -3,16 +3,9 @@ import { Board } from "../src/Board.mjs";
 import { Tetromino } from "../src/Tetromino.mjs";
 
 /* 
-a falling tetromino can be moved left
-a falling tetromino can be moved right
-a falling tetromino can be moved down
-it cannot be moved left beyond the board
-it cannot be moved right beyond the board
-it cannot be moved down beyond the board (will stop falling)
 it cannot be moved left through other blocks
 it cannot be moved right through other blocks
 it cannot be moved down through other blocks (will stop falling)
-
 */
 
 describe("Moving Falling tetrominoes", () => {
@@ -96,6 +89,25 @@ describe("Moving Falling tetrominoes", () => {
         ..........
         ..........
         ..........`
+    );
+  });
+
+  it("cannot be moved down beyond the board (will stop falling)", () => {
+    board.drop(Tetromino.T_SHAPE);
+    board.moveLeft();
+    board.tick();
+    board.tick();
+    board.tick();
+    board.tick();
+    board.tick();
+
+    expect(board.toString()).to.equalShape(
+      `..........
+            ..........
+            ..........
+            ..........
+            ...T......
+            ..TTT.....`
     );
   });
 });

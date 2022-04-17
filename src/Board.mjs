@@ -93,16 +93,27 @@ export class Board {
   }
 
   moveRight() {
+    // iterate over each row
+    // if for any row, the last char does not contain
+    // a dot, return early
+
+    const canManeuver = this.boardGrid.every((row) => {
+      const lastChar = row[row.length - 1];
+      return lastChar.includes(".");
+    });
+
+    if (!canManeuver) return;
+
     this.boardGrid.forEach((row) => {
-      // rm 2nd to last char
-      row.splice(row.length - 2, 1);
+      // remove last char
+      row.splice(row.length - 1, 1);
       // add a "." to the beginning
       row.unshift(".");
+      row[row.length - 1] += "\n";
     });
   }
 
   moveLeft() {
-    console.log(this.boardGrid);
     this.boardGrid.forEach((row) => {
       // remove 1st char
       row.shift();

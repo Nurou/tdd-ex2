@@ -93,16 +93,12 @@ export class Board {
   }
 
   moveRight() {
-    // iterate over each row
-    // if for any row, the last char does not contain
-    // a dot, return early
-
-    const canManeuver = this.boardGrid.every((row) => {
+    const canMove = this.boardGrid.every((row) => {
       const lastChar = row[row.length - 1];
       return lastChar.includes(".");
     });
 
-    if (!canManeuver) return;
+    if (!canMove) return;
 
     this.boardGrid.forEach((row) => {
       // remove last char
@@ -114,6 +110,13 @@ export class Board {
   }
 
   moveLeft() {
+    const canMove = this.boardGrid.every((row) => {
+      const firstChar = row[0];
+      return firstChar.includes(".");
+    });
+
+    if (!canMove) return;
+
     this.boardGrid.forEach((row) => {
       // remove 1st char
       row.shift();

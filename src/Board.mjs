@@ -94,21 +94,21 @@ export class Board {
 
   moveRight() {
     this.boardGrid.forEach((row) => {
+      // rm 2nd to last char
       row.splice(row.length - 2, 1);
+      // add a "." to the beginning
       row.unshift(".");
-      // row[row.length - 1] += "\n";
     });
   }
 
   moveLeft() {
     console.log(this.boardGrid);
-    row.splice(row.length - 1, 1);
-    row.unshift(".");
-    // this.boardGrid.forEach((row) => {
-    //   row.splice(row.length - 1, 1);
-    //   row.unshift(".");
-    //   row[row.length - 1] += "\n";
-    // });
+    this.boardGrid.forEach((row) => {
+      // remove 1st char
+      row.shift();
+      // add a "." before last char
+      row.splice(row.length - 2, 0, ".");
+    });
   }
 
   hasFalling() {

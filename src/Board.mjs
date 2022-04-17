@@ -78,11 +78,6 @@ export class Board {
       // landed on another block
       this.fallingBlock = null;
     } else {
-      const startIndex =
-        this.fallingBlock.currentBottomRow -
-        this.fallingBlock.shapeGrid.grid.length +
-        1;
-
       if (this.fallingBlock.shapeGrid.grid.length == 1) {
         const shapeEndIndex = this.fallingBlock.currentBottomRow;
 
@@ -95,6 +90,25 @@ export class Board {
 
       this.fallingBlock.currentBottomRow += 1;
     }
+  }
+
+  moveRight() {
+    this.boardGrid.forEach((row) => {
+      row.splice(row.length - 2, 1);
+      row.unshift(".");
+      // row[row.length - 1] += "\n";
+    });
+  }
+
+  moveLeft() {
+    console.log(this.boardGrid);
+    row.splice(row.length - 1, 1);
+    row.unshift(".");
+    // this.boardGrid.forEach((row) => {
+    //   row.splice(row.length - 1, 1);
+    //   row.unshift(".");
+    //   row[row.length - 1] += "\n";
+    // });
   }
 
   hasFalling() {

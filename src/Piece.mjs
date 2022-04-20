@@ -3,36 +3,39 @@ function isEmpty(string) {
   return chars.every((char) => char === ".");
 }
 
-export class Grid {
+export class Piece {
   grid;
-  constructor(shape, width) {
+  constructor(shape, width, height) {
     const res = shape.split("\n").filter((row) => !isEmpty(row));
     const len = res[0].length;
-    let gridified;
+
+    let grid;
+
+    // pad each row with empty chars if necessary
+    // so that they are same width as board
     if (len < width) {
-      gridified = res.map((str) => {
+      grid = res.map((str) => {
         let newStr = str;
-        let end = true;
+        // toggle between padding start and end
+        let shouldPadEnd = true;
         while (newStr.length < width) {
-          if (end) {
+          if (shouldPadEnd) {
             newStr = newStr.padEnd(newStr.length + 1, ".");
-            end = false;
+            shouldPadEnd = false;
           } else {
             newStr = newStr.padStart(newStr.length + 1, ".");
-            end = true;
+            shouldPadEnd = true;
           }
         }
         return newStr;
       });
     }
-    gridified = gridified.map((row, i) => {
-      let newStr = row.split("");
-      return newStr.map((str, i) =>
-        i === newStr.length - 1 ? str + "\n" : str
-      );
+
+    grid = grid.map((row) => {
+      return row.split("");
     });
 
-    this.grid = gridified;
+    this.grid = grid;
   }
 
   toString() {

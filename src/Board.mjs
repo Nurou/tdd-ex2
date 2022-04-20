@@ -1,135 +1,184 @@
 import { Block } from "./Block.mjs";
-import { Grid } from "./Grid.mjs";
+import { Piece } from "./Piece.mjs";
 
-function rowIsEmpty(row) {
-  return row.every((char) => char === "." || char === ".\n");
+function generateStationaryBoard(width, height) {
+  let grid = [];
+  for (let row = 0; row < height; row++) {
+    let currentRow = [];
+    for (let col = 0; col < width; col++) {
+      currentRow.push(".");
+    }
+    grid.push(currentRow);
+  }
+  return grid;
 }
 
-function generateEmptyRow(width) {
-  return [...Array(width)].map((_, i) => (i === width - 1 ? ".\n" : "."));
+function generateFallingBlockPiece(block, width, height) {
+  let piece;
+  if (block instanceof Block) {
+    piece = new Piece(block.color, width, height);
+  } else {
+    piece = new Piece(block.shape, width, height);
+  }
+  return piece;
 }
+
 export class Board {
   width;
   height;
-  boardGrid;
-  fallingBlock = null;
+  stationaryBoard;
+  fallingPieceBlockShape;
+  fallingPiece = null;
 
   constructor(width, height) {
     this.width = width;
     this.height = height;
 
-    const grid = [];
+    const stationaryBoard = generateStationaryBoard(width, height);
 
-    // generate grid
-    for (let row = 0; row < this.height; row++) {
-      let currentRow = [];
-      for (let col = 0; col < this.width; col++) {
-        if (col === this.width - 1) {
-          currentRow.push(".\n");
-        } else {
-          currentRow.push(".");
-        }
-      }
-      grid.push(currentRow);
-    }
-
-    this.boardGrid = grid;
+    this.stationaryBoard = stationaryBoard;
   }
 
   drop(block) {
-    if (this.fallingBlock) {
-      throw "already falling";
+    if (this.fallingPiece) {
+      throw new Error("already falling");
     }
 
-    let shapeGrid;
-    if (block instanceof Block) {
-      shapeGrid = new Grid(block.color, this.width);
-    } else {
-      shapeGrid = new Grid(block.shape, this.width);
-    }
+    let piece = generateFallingBlockPiece(block, this.width, this.height);
 
-    const initialEndRowIndex = shapeGrid.grid.length - 1;
+    const fallingBlockCoordinates = [];
 
-    this.fallingBlock = {
-      shapeGrid,
-      currentBottomRow: initialEndRowIndex,
-    };
-
-    if (shapeGrid.grid.length == 1) {
-      this.boardGrid[0] = shapeGrid.grid[0];
-    } else {
-      for (let i = 0; i < shapeGrid.grid.length; i++) {
-        this.boardGrid[i] = shapeGrid.grid[i];
+    for (let row = 0; row < piece.grid.length; row++) {
+      for (let col = 0; col < piece.grid[0].length; col++) {
+        const charAtCell = piece.grid[row][col];
+        if (charAtCell !== ".") {
+          fallingBlockCoordinates.push({ row, col });
+          if (!this.fallingPieceBlockShape) {
+            this.fallingPieceBlockShape = charAtCell;
+          }
+        }
       }
     }
+
+    this.fallingPiece = fallingBlockCoordinates;
   }
 
+  /* 
+  if not on bottom row and no block underneath, increment falling block row
+  if on bottom row, do not increment, set falling block to null
+  
+ */
   tick() {
-    if (!this.fallingBlock) return;
+    if (!this.fallingPiece) return;
 
-    const endRowIndexOfShape = this.fallingBlock.currentBottomRow;
-    const newIndex = endRowIndexOfShape + 1;
-    const emptyRow = generateEmptyRow(this.width);
+    const currentBottomRowCoords = [...this.fallingPiece].sort(
+      (a, b) => b.row - a.row
+    );
 
-    if (newIndex > this.height - 1) {
-      // landed on bottom rom
-      this.fallingBlock = null;
-    } else if (!rowIsEmpty(this.boardGrid[newIndex])) {
-      // landed on another block
-      this.fallingBlock = null;
+    const currentBottomRowIndex = currentBottomRowCoords[0].row;
+
+    const hasLanded = currentBottomRowIndex === this.height - 1;
+
+    let hasLandedOnAnotherBlock = false;
+
+    if (!hasLanded) {
+      const nextBottomRowIndex = currentBottomRowCoords[0].row + 1;
+      const nextBottomRowCoords = currentBottomRowCoords
+        .map((coord) => ({ ...coord, row: nextBottomRowIndex }))
+        .filter((coord) => coord.row === nextBottomRowIndex);
+
+      hasLandedOnAnotherBlock = nextBottomRowCoords.some((coord) => {
+        return this.stationaryBoard[coord.row]?.[coord.col] !== ".";
+      });
+    }
+
+    if (!hasLanded && !hasLandedOnAnotherBlock) {
+      this.fallingPiece = this.fallingPiece.map((coord) => ({
+        ...coord,
+        row: coord.row + 1,
+      }));
     } else {
-      if (this.fallingBlock.shapeGrid.grid.length == 1) {
-        const shapeEndIndex = this.fallingBlock.currentBottomRow;
-
-        this.boardGrid[shapeEndIndex] = emptyRow;
-        this.boardGrid[shapeEndIndex + 1] = this.fallingBlock.shapeGrid.grid[0];
-      } else {
-        this.boardGrid.splice(newIndex, 1);
-        this.boardGrid.unshift(emptyRow);
+      // update stationary board
+      for (let row = 0; row < this.height; row++) {
+        for (let column = 0; column < this.width; column++) {
+          this.stationaryBoard[row][column] = this.charAtCell(row, column);
+        }
       }
-
-      this.fallingBlock.currentBottomRow += 1;
+      this.fallingPiece = null;
+      this.fallingPieceBlockShape = null;
     }
   }
 
   moveRight() {
-    const canMove = this.boardGrid.every((row) => {
-      const lastChar = row[row.length - 1];
-      return lastChar.includes(".");
-    });
+    const sortedByRow = [...this.fallingPiece].sort((a, b) => b.row - a.row);
+    const bottomRowIndex = sortedByRow[0].row;
+    const onlyBottomRowCells = sortedByRow.filter(
+      (coords) => coords.row === bottomRowIndex
+    );
+    const sortedByCol = onlyBottomRowCells.sort((a, b) => b.col - a.col);
+    const rightmostCell = sortedByCol[0];
 
-    if (!canMove) return;
+    const cellToRight =
+      this.stationaryBoard[rightmostCell.row][rightmostCell.col + 1];
 
-    this.boardGrid.forEach((row) => {
-      // remove last char
-      row.splice(row.length - 1, 1);
-      // add a "." to the beginning
-      row.unshift(".");
-      row[row.length - 1] += "\n";
-    });
+    const cellToRightIsEmpty = cellToRight === ".";
+
+    if (!cellToRightIsEmpty) return;
+
+    this.fallingPiece = this.fallingPiece.map((coord) => ({
+      ...coord,
+      col: coord.col + 1,
+    }));
   }
 
   moveLeft() {
-    const canMove = this.boardGrid.every((row) => {
-      const firstChar = row[0];
-      return firstChar.includes(".");
-    });
+    const sortedByRow = [...this.fallingPiece].sort((a, b) => b.row - a.row);
+    const bottomRowIndex = sortedByRow[0].row;
+    const onlyBottomRowCells = sortedByRow.filter(
+      (coords) => coords.row === bottomRowIndex
+    );
+    const sortedByCol = onlyBottomRowCells.sort((a, b) => a.col - b.col);
+    const leftmostCell = sortedByCol[0];
 
-    if (!canMove) return;
+    const cellToLeft =
+      this.stationaryBoard[leftmostCell.row][leftmostCell.col - 1];
 
-    this.boardGrid.forEach((row) => {
-      // remove 1st char
-      row.shift();
-      // add a "." before last char
-      row.splice(row.length - 2, 0, ".");
-    });
+    const cellToLeftIsEmpty = cellToLeft === ".";
+
+    if (!cellToLeftIsEmpty) return;
+
+    this.fallingPiece = this.fallingPiece.map((coord) => ({
+      ...coord,
+      col: coord.col - 1,
+    }));
   }
 
   hasFalling() {
-    return Boolean(this.fallingBlock);
+    return Boolean(this.fallingPiece);
+  }
+
+  charAtCell(row, col) {
+    let fallingBlockCellIsOccupied = false;
+    if (this.fallingPiece) {
+      fallingBlockCellIsOccupied = this.fallingPiece.some(
+        (coord) => coord.row === row && coord.col === col
+      );
+    }
+    if (fallingBlockCellIsOccupied) {
+      return this.fallingPieceBlockShape;
+    } else {
+      return this.stationaryBoard[row][col];
+    }
   }
 
   toString() {
-    return this.boardGrid.flat().join("");
+    let stringifiedBoard = "";
+    for (let row = 0; row < this.height; row++) {
+      for (let column = 0; column < this.width; column++) {
+        stringifiedBoard += this.charAtCell(row, column);
+      }
+      stringifiedBoard += "\n";
+    }
+    return stringifiedBoard;
   }
 }

@@ -13,6 +13,10 @@ function generateStationaryBoard(width, height) {
   return grid;
 }
 
+function cellContentIsEmpty(str) {
+  return str === ".";
+}
+
 function generateFallingBlockPiece(block, width, height) {
   let piece;
   piece = new Piece(block, width, height);
@@ -111,6 +115,8 @@ export class Board {
       }
       this.fallingPiece = null;
       this.fallingPieceBlockShape = null;
+      this.offsetRows = 0;
+      this.offsetCols = 0;
     }
   }
 
@@ -126,7 +132,7 @@ export class Board {
     const cellToRight =
       this.stationaryBoard[rightmostCell.row][rightmostCell.col + 1];
 
-    const cellToRightIsEmpty = cellToRight === ".";
+    const cellToRightIsEmpty = cellContentIsEmpty(cellToRight);
 
     if (!cellToRightIsEmpty) return;
 
@@ -150,7 +156,7 @@ export class Board {
     const cellToLeft =
       this.stationaryBoard[leftmostCell.row][leftmostCell.col - 1];
 
-    const cellToLeftIsEmpty = cellToLeft === ".";
+    const cellToLeftIsEmpty = cellContentIsEmpty(cellToLeft);
 
     if (!cellToLeftIsEmpty) return;
 
@@ -186,6 +192,23 @@ export class Board {
       this.offsetRows,
       this.offsetCols
     );
+
+    let noRoomToRotate = false;
+
+    for (let row = 0; row < updatedPiece.grid.length; row++) {
+      for (let col = 0; col < updatedPiece.grid[0].length; col++) {
+        const charAtCell = updatedPiece.grid[row][col];
+        const charAtStationaryCell = this.stationaryBoard[row][col];
+        if (
+          !cellContentIsEmpty(charAtCell) &&
+          !cellContentIsEmpty(charAtStationaryCell)
+        ) {
+          noRoomToRotate = true;
+        }
+      }
+    }
+
+    if (noRoomToRotate) return;
 
     const fallingBlockCoordinates = [];
 

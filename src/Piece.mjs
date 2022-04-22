@@ -18,7 +18,7 @@ function stringRowOfDots(width) {
 export class Piece {
   grid;
   block;
-  constructor(shape, width, height, offsetRow, offsetCol) {
+  constructor(shape, width, _, offsetRow, offsetCol) {
     const res = shape.split("\n").filter((row) => !isEmpty(row));
 
     // shift rows
@@ -55,7 +55,7 @@ export class Piece {
       const RIGHT = 1;
       const LEFT = 0;
       const DIRECTION = offsetCol > 0 ? RIGHT : LEFT;
-      const shifted = shift(row.split(""), DIRECTION, offsetCol);
+      const shifted = shift(row.split(""), DIRECTION, Math.abs(offsetCol));
       return shifted.join("");
     });
 

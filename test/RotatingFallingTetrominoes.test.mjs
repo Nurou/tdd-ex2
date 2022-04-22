@@ -27,4 +27,19 @@ describe("RotatingFallingTetrominoes", () => {
       ..........`
     );
   });
+
+  it("can be rotated left (ccw)", () => {
+    board.drop(Tetromino.T_SHAPE);
+    board.tick();
+    board.rotateLeft();
+
+    expect(board.toString()).to.equalShape(
+      `..........
+      ....T.....
+      ...TT.....
+      ....T.....
+      ..........
+      ..........`
+    );
+  });
 });

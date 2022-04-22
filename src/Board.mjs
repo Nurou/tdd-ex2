@@ -46,6 +46,7 @@ export class Board {
     }
 
     this.piece = piece;
+    console.log("💩 ~ file: Board.mjs ~ line 49 ~ Board ~ piece", piece);
 
     let gridifiedPiece = generateFallingBlockPiece(
       piece instanceof Block ? piece.color : piece.shape,
@@ -164,6 +165,16 @@ export class Board {
   rotateRight() {
     const rotatedPiece = this.piece.rotateRight();
 
+    this.updateFallingBlockCoordinates(rotatedPiece);
+  }
+
+  rotateLeft() {
+    const rotatedPiece = this.piece.rotateLeft();
+
+    this.updateFallingBlockCoordinates(rotatedPiece);
+  }
+
+  updateFallingBlockCoordinates(rotatedPiece) {
     const updatedPiece = new Piece(
       rotatedPiece.orientations[rotatedPiece.currentOrientationIndex].shape,
       this.width,

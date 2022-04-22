@@ -11,7 +11,7 @@ describe("RotatingFallingTetrominoes", () => {
     board = new Board(10, 6);
   });
 
-  xit("can be rotated right (cw)", () => {
+  it("can be rotated right (cw)", () => {
     board.drop(Tetromino.T_SHAPE);
     board.tick();
     board.rotateRight();
@@ -26,7 +26,7 @@ describe("RotatingFallingTetrominoes", () => {
     );
   });
 
-  xit("can be rotated left (ccw)", () => {
+  it("can be rotated left (ccw)", () => {
     board.drop(Tetromino.T_SHAPE);
     board.tick();
     board.rotateLeft();
@@ -41,7 +41,7 @@ describe("RotatingFallingTetrominoes", () => {
     );
   });
 
-  xit("should return back to starting orientation after being rotated right then left", () => {
+  it("should return back to starting orientation after being rotated right then left", () => {
     board.drop(Tetromino.T_SHAPE);
     board.tick();
     board.rotateRight();
@@ -57,7 +57,7 @@ describe("RotatingFallingTetrominoes", () => {
     );
   });
 
-  it("should not rotate when there is no room to rotate", () => {
+  it("should not rotate when there another block on the way", () => {
     board.drop(Tetromino.T_SHAPE);
     board.tick();
     board.tick();
@@ -75,6 +75,26 @@ describe("RotatingFallingTetrominoes", () => {
       ..........
       ....T.....
       ...TTT....`
+    );
+  });
+
+  it("should move away from the left wall when the wall prevents rotation", () => {
+    board.drop(Tetromino.T_SHAPE);
+    board.tick();
+    board.rotateRight();
+    board.moveLeft();
+    board.moveLeft();
+    board.moveLeft();
+    board.moveLeft();
+    board.rotateRight();
+
+    expect(board.toString()).to.equalShape(
+      `..........
+      .T........
+      .TT.......
+      .T........
+      ..........
+      ..........`
     );
   });
 });

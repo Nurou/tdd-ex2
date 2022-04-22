@@ -17,11 +17,8 @@ function cellContentIsEmpty(str) {
   return str === ".";
 }
 
-function generateFallingBlockPiece(block, width, height) {
-  let piece;
-  piece = new Piece(block, width, height);
-
-  return piece;
+function generateFallingBlockPiece(piece, width, height) {
+  return new Piece(piece, width, height);
 }
 
 export class Board {
@@ -50,10 +47,9 @@ export class Board {
     }
 
     this.piece = piece;
-    console.log("💩 ~ file: Board.mjs ~ line 49 ~ Board ~ piece", piece);
 
     let gridifiedPiece = generateFallingBlockPiece(
-      piece instanceof Block ? piece.color : piece.shape,
+      piece,
       this.width,
       this.height
     );
@@ -169,31 +165,34 @@ export class Board {
   }
 
   rotateRight() {
+    const prevOrientationIndex = this.piece.currentOrientationIndex;
     const rotatedPiece = this.piece.rotateRight();
 
     this.piece = rotatedPiece;
 
-    this.updateFallingBlockCoordinates(rotatedPiece);
+    this.updateFallingBlockCoordinates(rotatedPiece, prevOrientationIndex);
   }
 
   rotateLeft() {
+    const prevOrientationIndex = this.piece.currentOrientationIndex;
     const rotatedPiece = this.piece.rotateLeft();
 
     this.piece = rotatedPiece;
 
-    this.updateFallingBlockCoordinates(rotatedPiece);
+    this.updateFallingBlockCoordinates(rotatedPiece, prevOrientationIndex);
   }
 
-  updateFallingBlockCoordinates(rotatedPiece) {
+  updateFallingBlockCoordinates(rotatedPiece, prevOrientationIndex) {
     const updatedPiece = new Piece(
-      rotatedPiece.orientations[rotatedPiece.currentOrientationIndex].shape,
+      rotatedPiece,
       this.width,
       this.height,
       this.offsetRows,
-      this.offsetCols
+      this.offsetCols,
+      prevOrientationIndex
     );
 
-    let noRoomToRotate = false;
+    let blockedByAnotherPiece = false;
 
     for (let row = 0; row < updatedPiece.grid.length; row++) {
       for (let col = 0; col < updatedPiece.grid[0].length; col++) {
@@ -203,12 +202,12 @@ export class Board {
           !cellContentIsEmpty(charAtCell) &&
           !cellContentIsEmpty(charAtStationaryCell)
         ) {
-          noRoomToRotate = true;
+          blockedByAnotherPiece = true;
         }
       }
     }
 
-    if (noRoomToRotate) return;
+    if (blockedByAnotherPiece) return;
 
     const fallingBlockCoordinates = [];
 

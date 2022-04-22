@@ -1,8 +1,44 @@
 import { Block } from "./Block.mjs";
-import { RotatingShape } from "./RotatingShape.mjs";
+
+function shiftHitsRightWall(arr, direction, n) {
+  const times = n > arr.length ? n % arr.length : n;
+
+  const leftMostCellIsEmptyPreShift = arr[0] === ".";
+  const arrCopy = [...arr];
+
+  const proposedArr = arrCopy.concat(
+    arrCopy.splice(0, direction > 0 ? arr.length - times : times)
+  );
+
+  const leftMostCellIsEmptyPostShift = proposedArr[0] === ".";
+
+  const wallHit = leftMostCellIsEmptyPreShift && !leftMostCellIsEmptyPostShift;
+
+  return wallHit;
+}
+
+function shiftHitsLeftWall(arr, direction, n) {
+  const times = n > arr.length ? n % arr.length : n;
+
+  const rightMostCellIsEmptyPreShift = arr[arr.length - 1] === ".";
+  const arrCopy = [...arr];
+
+  const proposedArr = arrCopy.concat(
+    arrCopy.splice(0, direction > 0 ? arr.length - times : times)
+  );
+
+  const rightMostCellIsEmptyPostShift =
+    proposedArr[proposedArr.length - 1] === ".";
+
+  const wallHit =
+    rightMostCellIsEmptyPreShift && !rightMostCellIsEmptyPostShift;
+
+  return wallHit;
+}
 
 function shift(arr, direction, n) {
-  var times = n > arr.length ? n % arr.length : n;
+  const times = n > arr.length ? n % arr.length : n;
+
   return arr.concat(arr.splice(0, direction > 0 ? arr.length - times : times));
 }
 
@@ -18,8 +54,13 @@ function stringRowOfDots(width) {
 export class Piece {
   grid;
   block;
-  constructor(shape, width, _, offsetRow, offsetCol) {
-    const res = shape.split("\n").filter((row) => !isEmpty(row));
+  constructor(piece, width, _, offsetRow, offsetCol, prevOrientationIndex) {
+    const pieceShape =
+      piece instanceof Block
+        ? piece.color
+        : piece.orientations[piece.currentOrientationIndex].shape;
+
+    const res = pieceShape.split("\n").filter((row) => !isEmpty(row));
 
     // shift rows
     for (let index = 0; index < offsetRow; index++) {
@@ -50,27 +91,49 @@ export class Piece {
       });
     }
 
-    // shift cols
-    grid = grid.map((row) => {
-      const RIGHT = 1;
-      const LEFT = 0;
-      const DIRECTION = offsetCol > 0 ? RIGHT : LEFT;
-      const shifted = shift(row.split(""), DIRECTION, Math.abs(offsetCol));
-      return shifted.join("");
+    const RIGHT = 1;
+    const LEFT = 0;
+    const DIRECTION = offsetCol > 0 ? RIGHT : LEFT;
+
+    const wallHit = grid.some((row) => {
+      return DIRECTION === LEFT
+        ? shiftHitsLeftWall(row.split(""), DIRECTION, Math.abs(offsetCol))
+        : shiftHitsRightWall(row.split(""), DIRECTION, Math.abs(offsetCol));
     });
+
+    if (wallHit) {
+      if (DIRECTION === LEFT) {
+        return new Piece(
+          { ...piece, currentOrientationIndex: prevOrientationIndex },
+          width,
+          _,
+          offsetRow,
+          offsetCol + 1,
+          prevOrientationIndex
+        );
+      } else {
+        return new Piece(
+          { ...piece, currentOrientationIndex: prevOrientationIndex },
+          width,
+          _,
+          offsetRow,
+          offsetCol - 1,
+          prevOrientationIndex
+        );
+      }
+    } else {
+      // shift cols
+      grid = grid.map((row) => {
+        const shifted = shift(row.split(""), DIRECTION, Math.abs(offsetCol));
+        return shifted.join("");
+      });
+    }
 
     grid = grid.map((row) => {
       return row.split("");
     });
 
     this.grid = grid;
-  }
-
-  rotateRight() {
-    // returns new Tetromino instance
-    const rotated = this.block.rotateRight();
-    // re-build grid with new shape
-    return this.block.rotateRight();
   }
 
   toString() {

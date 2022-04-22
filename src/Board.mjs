@@ -15,20 +15,21 @@ function generateStationaryBoard(width, height) {
 
 function generateFallingBlockPiece(block, width, height) {
   let piece;
-  if (block instanceof Block) {
-    piece = new Piece(block.color, width, height);
-  } else {
-    piece = new Piece(block.shape, width, height);
-  }
+  piece = new Piece(block, width, height);
+
   return piece;
 }
 
 export class Board {
   width;
   height;
+  piece;
   stationaryBoard;
   fallingPieceBlockShape;
   fallingPiece = null;
+
+  offsetRows = 0;
+  offsetCols = 0;
 
   constructor(width, height) {
     this.width = width;
@@ -39,18 +40,24 @@ export class Board {
     this.stationaryBoard = stationaryBoard;
   }
 
-  drop(block) {
+  drop(piece) {
     if (this.fallingPiece) {
       throw new Error("already falling");
     }
 
-    let piece = generateFallingBlockPiece(block, this.width, this.height);
+    this.piece = piece;
+
+    let gridifiedPiece = generateFallingBlockPiece(
+      piece instanceof Block ? piece.color : piece.shape,
+      this.width,
+      this.height
+    );
 
     const fallingBlockCoordinates = [];
 
-    for (let row = 0; row < piece.grid.length; row++) {
-      for (let col = 0; col < piece.grid[0].length; col++) {
-        const charAtCell = piece.grid[row][col];
+    for (let row = 0; row < gridifiedPiece.grid.length; row++) {
+      for (let col = 0; col < gridifiedPiece.grid[0].length; col++) {
+        const charAtCell = gridifiedPiece.grid[row][col];
         if (charAtCell !== ".") {
           fallingBlockCoordinates.push({ row, col });
           if (!this.fallingPieceBlockShape) {
@@ -63,11 +70,6 @@ export class Board {
     this.fallingPiece = fallingBlockCoordinates;
   }
 
-  /* 
-  if not on bottom row and no block underneath, increment falling block row
-  if on bottom row, do not increment, set falling block to null
-  
- */
   tick() {
     if (!this.fallingPiece) return;
 
@@ -97,6 +99,8 @@ export class Board {
         ...coord,
         row: coord.row + 1,
       }));
+
+      this.offsetRows++;
     } else {
       // update stationary board
       for (let row = 0; row < this.height; row++) {
@@ -129,6 +133,8 @@ export class Board {
       ...coord,
       col: coord.col + 1,
     }));
+
+    this.offsetCols++;
   }
 
   moveLeft() {
@@ -151,6 +157,36 @@ export class Board {
       ...coord,
       col: coord.col - 1,
     }));
+
+    this.offsetCols--;
+  }
+
+  rotateRight() {
+    const rotatedPiece = this.piece.rotateRight();
+
+    const updatedPiece = new Piece(
+      rotatedPiece.orientations[rotatedPiece.currentOrientationIndex].shape,
+      this.width,
+      this.height,
+      this.offsetRows,
+      this.offsetCols
+    );
+
+    const fallingBlockCoordinates = [];
+
+    for (let row = 0; row < updatedPiece.grid.length; row++) {
+      for (let col = 0; col < updatedPiece.grid[0].length; col++) {
+        const charAtCell = updatedPiece.grid[row][col];
+        if (charAtCell !== ".") {
+          fallingBlockCoordinates.push({ row, col });
+          if (!this.fallingPieceBlockShape) {
+            this.fallingPieceBlockShape = charAtCell;
+          }
+        }
+      }
+    }
+
+    this.fallingPiece = fallingBlockCoordinates;
   }
 
   hasFalling() {

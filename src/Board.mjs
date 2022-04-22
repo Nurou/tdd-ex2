@@ -165,11 +165,15 @@ export class Board {
   rotateRight() {
     const rotatedPiece = this.piece.rotateRight();
 
+    this.piece = rotatedPiece;
+
     this.updateFallingBlockCoordinates(rotatedPiece);
   }
 
   rotateLeft() {
     const rotatedPiece = this.piece.rotateLeft();
+
+    this.piece = rotatedPiece;
 
     this.updateFallingBlockCoordinates(rotatedPiece);
   }

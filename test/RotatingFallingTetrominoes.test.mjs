@@ -42,4 +42,20 @@ describe("RotatingFallingTetrominoes", () => {
       ..........`
     );
   });
+
+  it("should return back to starting orientation after being rotated right then left", () => {
+    board.drop(Tetromino.T_SHAPE);
+    board.tick();
+    board.rotateRight();
+    board.rotateLeft();
+
+    expect(board.toString()).to.equalShape(
+      `..........
+          ....T.....
+          ...TTT....
+          ..........
+          ..........
+          ..........`
+    );
+  });
 });

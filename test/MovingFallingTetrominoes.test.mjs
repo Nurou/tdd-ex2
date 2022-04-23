@@ -116,7 +116,7 @@ describe("Moving Falling tetrominoes", () => {
     board.tick();
     board.tick();
 
-    board.drop(Tetromino.I_SHAPE);
+    board.drop(Tetromino.I_SHAPE());
     board.tick();
     board.tick();
     board.tick();
@@ -145,7 +145,7 @@ describe("Moving Falling tetrominoes", () => {
     board.tick();
     board.tick();
 
-    board.drop(Tetromino.I_SHAPE);
+    board.drop(Tetromino.I_SHAPE());
     board.tick();
     board.tick();
     board.tick();
@@ -170,7 +170,7 @@ describe("Moving Falling tetrominoes", () => {
     board.tick();
     board.tick();
     board.tick();
-    board.drop(Tetromino.I_SHAPE);
+    board.drop(Tetromino.I_SHAPE());
     board.tick();
     board.tick();
     board.tick();

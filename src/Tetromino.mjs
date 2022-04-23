@@ -16,14 +16,19 @@ export class Tetromino {
     );
   }
 
-  static I_SHAPE = new Tetromino(
-    `IIII
-  ....
-  ....`,
-    2,
-    0,
-    []
-  );
+  static I_SHAPE(initialOrientation = 0) {
+    return new Tetromino(
+      `IIII
+    ....
+    ....`,
+      2,
+      initialOrientation,
+      [
+        new RotatingShape("....\nIIII\n....\n...."),
+        new RotatingShape("..I.\n..I.\n..I.\n..I."),
+      ]
+    );
+  }
   static O_SHAPE = new Tetromino(
     `.OO
     .OO
@@ -55,6 +60,7 @@ export class Tetromino {
 
     this.currentOrientationIndex = index;
 
+    // TODO: remove once shape orientations are hardcoded
     if (orientations.length === 0) {
       let orientation = new RotatingShape(shape);
 

@@ -137,7 +137,7 @@ describe("The S shape", () => {
   });
 
   it("can be rotated left/counter-clockwise", () => {
-    expect(shape.rotateRight().toString()).to.equalShape(
+    expect(shape.rotateLeft().toString()).to.equalShape(
       `S...
        SS..
        .S..
@@ -176,12 +176,12 @@ describe("The Z shape", () => {
     );
   });
 
-  xit("can be rotated left/counter-clockwise", () => {
-    expect(shape.rotateRight().toString()).to.equalShape(
-      `S...
-       SS..
-       .S..
-       `
+  it("can be rotated left/counter-clockwise", () => {
+    expect(shape.rotateLeft().toString()).to.equalShape(
+      `..Z.
+      .ZZ.
+      .Z..
+      `
     );
   });
 

@@ -62,6 +62,7 @@ describe("RotatingFallingTetrominoes", () => {
     board.tick();
     board.tick();
     board.drop(Tetromino.I_SHAPE);
+    board.moveLeft();
     board.tick();
     board.rotateRight();
 

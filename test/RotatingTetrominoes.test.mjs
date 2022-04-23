@@ -185,12 +185,12 @@ describe("The Z shape", () => {
     );
   });
 
-  xit("can loop around", () => {
+  it("can loop around", () => {
     expect(
       shape.rotateRight().rotateRight().rotateRight().rotateRight().toString()
     ).to.equalShape(
-      `.SS.
-      SS..
+      `ZZ..
+      .ZZ.
       ....`
     );
   });

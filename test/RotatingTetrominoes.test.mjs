@@ -155,3 +155,43 @@ describe("The S shape", () => {
     );
   });
 });
+
+describe("The Z shape", () => {
+  const shape = Tetromino.Z_SHAPE();
+
+  it("initial orientation", () => {
+    expect(shape.toString()).to.equalShape(
+      `ZZ..
+       .ZZ.
+       ....`
+    );
+  });
+
+  xit("can be rotated right/clockwise", () => {
+    expect(shape.rotateRight().toString()).to.equalShape(
+      `S...
+       SS..
+       .S..
+       `
+    );
+  });
+
+  xit("can be rotated left/counter-clockwise", () => {
+    expect(shape.rotateRight().toString()).to.equalShape(
+      `S...
+       SS..
+       .S..
+       `
+    );
+  });
+
+  xit("can loop around", () => {
+    expect(
+      shape.rotateRight().rotateRight().rotateRight().rotateRight().toString()
+    ).to.equalShape(
+      `.SS.
+      SS..
+      ....`
+    );
+  });
+});

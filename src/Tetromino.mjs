@@ -29,6 +29,13 @@ export class Tetromino {
     ]);
   }
 
+  static Z_SHAPE(initialOrientation = 0) {
+    return new Tetromino(initialOrientation, [
+      new RotatingShape("ZZ..\n.ZZ.\n...."),
+      new RotatingShape("..Z.\n.ZZ.\n.Z.."),
+    ]);
+  }
+
   orientations = [];
   currentOrientationIndex = 0;
 

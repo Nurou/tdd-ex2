@@ -85,29 +85,29 @@ describe("The I shape", () => {
 });
 
 describe("The O shape", () => {
-  const shape = Tetromino.O_SHAPE;
+  const shape = Tetromino.O_SHAPE();
 
   it("initial orientation", () => {
     expect(shape.toString()).to.equalShape(
-      `.OO
-       .OO
-       ...`
+      `.OO.
+       .OO.
+       ....`
     );
   });
 
   it("cannot be rotated right/clockwise", () => {
     expect(shape.rotateRight().toString()).to.equalShape(
-      `.OO
-       .OO
-       ...`
+      `.OO.
+       .OO.
+       ....`
     );
   });
 
   it("cannot be rotated left/counter-clockwise", () => {
     expect(shape.rotateLeft().toString()).to.equalShape(
-      `.OO
-       .OO
-       ...`
+      `.OO.
+       .OO.
+       ....`
     );
   });
 

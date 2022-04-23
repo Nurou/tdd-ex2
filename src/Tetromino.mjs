@@ -29,14 +29,16 @@ export class Tetromino {
       ]
     );
   }
-  static O_SHAPE = new Tetromino(
-    `.OO
-    .OO
-    ...`,
-    1,
-    0,
-    []
-  );
+  static O_SHAPE(initialOrientation = 0) {
+    return new Tetromino(
+      `.OO
+      .OO
+      ...`,
+      1,
+      initialOrientation,
+      [new RotatingShape(".OO.\n.OO.\n....")]
+    );
+  }
 
   shape;
   orientations = [];

@@ -1,4 +1,3 @@
-import { Block } from "./Block.mjs";
 import { Piece } from "./Piece.mjs";
 
 function generateStationaryBoard(width, height) {

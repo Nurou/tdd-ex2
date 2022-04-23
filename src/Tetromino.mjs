@@ -1,14 +1,21 @@
 import { RotatingShape } from "./RotatingShape.mjs";
 
 export class Tetromino {
-  static T_SHAPE = new Tetromino(
-    `.T.
-  TTT
-  ...`,
-    4,
-    0,
-    []
-  );
+  static T_SHAPE(initialOrientation = 0) {
+    return new Tetromino(
+      `TTT
+    .T.`,
+      4,
+      initialOrientation,
+      [
+        new RotatingShape("....\nTTT.\n.T.."),
+        new RotatingShape(".T..\nTT..\n.T.."),
+        new RotatingShape("....\n.T..\nTTT."),
+        new RotatingShape(".T..\n.TT.\n.T.."),
+      ]
+    );
+  }
+
   static I_SHAPE = new Tetromino(
     `IIII
   ....
@@ -32,10 +39,7 @@ export class Tetromino {
   maxOrientations;
 
   constructor(shape, maxOrientations, currentOrientationIndex, orientations) {
-    this.shape = shape
-      .split("\n")
-      .map((s) => s.trim().concat("\n"))
-      .join("");
+    this.shape = shape;
 
     this.maxOrientations = maxOrientations;
 

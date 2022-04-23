@@ -9,7 +9,7 @@ describe("Moving Falling tetrominoes", () => {
   });
 
   it("a falling tetromino can be moved right", () => {
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(Tetromino.T_SHAPE(2));
     board.moveRight();
 
     expect(board.toString()).to.equalShape(
@@ -23,7 +23,7 @@ describe("Moving Falling tetrominoes", () => {
   });
 
   it("a falling tetromino can be moved left", () => {
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(Tetromino.T_SHAPE(2));
     board.moveLeft();
 
     expect(board.toString()).to.equalShape(
@@ -37,7 +37,7 @@ describe("Moving Falling tetrominoes", () => {
   });
 
   it("a falling tetromino can be moved down", () => {
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(Tetromino.T_SHAPE(2));
     board.moveLeft();
     board.tick();
 
@@ -52,7 +52,7 @@ describe("Moving Falling tetrominoes", () => {
   });
 
   it("cannot be moved right beyond the board", () => {
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(Tetromino.T_SHAPE(2));
     board.moveRight();
     board.moveRight();
     board.moveRight();
@@ -70,7 +70,7 @@ describe("Moving Falling tetrominoes", () => {
   });
 
   it("cannot be moved left beyond the board", () => {
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(Tetromino.T_SHAPE(2));
     board.moveLeft();
     board.moveLeft();
     board.moveLeft();
@@ -87,7 +87,7 @@ describe("Moving Falling tetrominoes", () => {
   });
 
   it("cannot be moved down beyond the board (will stop falling)", () => {
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(Tetromino.T_SHAPE(2));
     board.moveLeft();
     board.tick();
     board.tick();
@@ -106,7 +106,7 @@ describe("Moving Falling tetrominoes", () => {
   });
 
   it("cannot be moved left through other blocks", () => {
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(Tetromino.T_SHAPE(2));
     board.moveLeft();
     board.moveLeft();
     board.moveLeft();
@@ -135,7 +135,7 @@ describe("Moving Falling tetrominoes", () => {
   });
 
   it("it cannot be moved right through other blocks", () => {
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(Tetromino.T_SHAPE(2));
     board.moveRight();
     board.moveRight();
     board.moveRight();
@@ -164,7 +164,7 @@ describe("Moving Falling tetrominoes", () => {
   });
 
   it("it cannot be moved down through other blocks (will stop falling)", () => {
-    board.drop(Tetromino.T_SHAPE);
+    board.drop(Tetromino.T_SHAPE(2));
     board.tick();
     board.tick();
     board.tick();

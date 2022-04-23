@@ -15,29 +15,29 @@ function distinctOrientations(shape) {
 }
 
 describe("The T shape", () => {
-  const shape = Tetromino.T_SHAPE;
+  const shape = Tetromino.T_SHAPE(2);
 
   it("initial orientation", () => {
     expect(shape.toString()).to.equalShape(
-      `.T.
-       TTT
-       ...`
+      `....
+       .T..
+       TTT.`
     );
   });
 
   it("can be rotated right/clockwise", () => {
     expect(shape.rotateRight().toString()).to.equalShape(
-      `.T.
-       .TT
-       .T.`
+      `.T..
+       .TT.
+       .T..`
     );
   });
 
   it("can be rotated left/counter-clockwise", () => {
     expect(shape.rotateLeft().toString()).to.equalShape(
-      `.T.
-       TT.
-       .T.`
+      `.T..
+       TT..
+       .T..`
     );
   });
 

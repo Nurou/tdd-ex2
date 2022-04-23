@@ -22,6 +22,13 @@ export class Tetromino {
     ]);
   }
 
+  static S_SHAPE(initialOrientation = 0) {
+    return new Tetromino(initialOrientation, [
+      new RotatingShape(".SS.\nSS..\n...."),
+      new RotatingShape("S...\nSS..\n.S.."),
+    ]);
+  }
+
   orientations = [];
   currentOrientationIndex = 0;
 

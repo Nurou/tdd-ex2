@@ -79,22 +79,24 @@ export class Board {
 
     const currentBottomRowIndex = currentBottomRowCoords[0].row;
 
-    const hasLanded = currentBottomRowIndex === this.height - 1;
+    const hasReachedBottom = currentBottomRowIndex === this.height - 1;
 
-    let hasLandedOnAnotherBlock = false;
+    let hasLandedOnAnotherPiece = false;
 
-    if (!hasLanded) {
+    // we also need to ensure it hasn't landed on another piece
+    if (!hasReachedBottom) {
       const nextBottomRowIndex = currentBottomRowCoords[0].row + 1;
       const nextBottomRowCoords = currentBottomRowCoords
         .map((coord) => ({ ...coord, row: nextBottomRowIndex }))
         .filter((coord) => coord.row === nextBottomRowIndex);
 
-      hasLandedOnAnotherBlock = nextBottomRowCoords.some((coord) => {
+      hasLandedOnAnotherPiece = nextBottomRowCoords.some((coord) => {
         return this.stationaryBoard[coord.row]?.[coord.col] !== ".";
       });
     }
 
-    if (!hasLanded && !hasLandedOnAnotherBlock) {
+    if (!hasReachedBottom && !hasLandedOnAnotherPiece) {
+      // carry on ticking...
       this.fallingPiece = this.fallingPiece.map((coord) => ({
         ...coord,
         row: coord.row + 1,
@@ -102,7 +104,8 @@ export class Board {
 
       this.offsetRows++;
     } else {
-      // update stationary board
+      // this piece is done
+      // so update stationary board
       for (let row = 0; row < this.height; row++) {
         for (let column = 0; column < this.width; column++) {
           this.stationaryBoard[row][column] = this.charAtCell(row, column);
@@ -112,6 +115,28 @@ export class Board {
       this.fallingPieceBlockShape = null;
       this.offsetRows = 0;
       this.offsetCols = 0;
+
+      // clear any lines
+      let clearedLines = 0;
+
+      const boardWithClearedLines = this.stationaryBoard.filter((row) => {
+        const rowIsFull = row.every((cell) => cell !== ".");
+        if (rowIsFull) {
+          clearedLines++;
+          return false;
+        } else {
+          return true;
+        }
+      });
+
+      let newStationaryBoard = boardWithClearedLines;
+
+      for (let index = 0; index < clearedLines; index++) {
+        const emptyRow = Array(this.width).fill(".");
+        newStationaryBoard.unshift(emptyRow);
+      }
+
+      this.stationaryBoard = newStationaryBoard;
     }
   }
 

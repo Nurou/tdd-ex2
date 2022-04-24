@@ -216,11 +216,11 @@ describe("The L shape", () => {
     );
   });
 
-  xit("can be rotated left/counter-clockwise", () => {
+  it("can be rotated left/counter-clockwise", () => {
     expect(shape.rotateLeft().toString()).to.equalShape(
-      `..L.
-      .LL.
+      `.L..
       .L..
+      .LL.
       `
     );
   });

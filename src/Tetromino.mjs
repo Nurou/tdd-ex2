@@ -36,6 +36,15 @@ export class Tetromino {
     ]);
   }
 
+  static L_SHAPE(initialOrientation = 0) {
+    return new Tetromino(initialOrientation, [
+      new RotatingShape("LLL.\nL...\n...."),
+      new RotatingShape("LL..\n.L..\n.L.."),
+      new RotatingShape("....\n..L.\nLLL."),
+      new RotatingShape(".L..\n.L..\n.LL."),
+    ]);
+  }
+
   orientations = [];
   currentOrientationIndex = 0;
 

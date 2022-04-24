@@ -225,13 +225,11 @@ describe("The L shape", () => {
     );
   });
 
-  xit("can loop around", () => {
-    expect(
-      shape.rotateRight().rotateRight().rotateRight().rotateRight().toString()
-    ).to.equalShape(
-      `LL..
-      .LL.
-      ....`
+  it("can loop around", () => {
+    expect(shape.toString()).to.equalShape(
+      `LLL.
+       L...
+       ....`
     );
   });
 });

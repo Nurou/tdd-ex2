@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { Block } from "../src/Block.mjs";
 import { Board } from "../src/Board.mjs";
 import { Tetromino } from "../src/Tetromino.mjs";
 
@@ -83,6 +84,73 @@ describe("Clearing lines", () => {
         ..........
         ..........
         ..........`
+    );
+  });
+
+  it("should clear with hurdles", () => {
+    board.drop(Tetromino.I_SHAPE());
+    board.moveRight();
+    fallToBottom(board);
+    board.drop(Tetromino.I_SHAPE());
+    board.moveRight();
+    fallToBottom(board);
+
+    board.drop(Tetromino.O_SHAPE());
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+    fallToBottom(board);
+    board.drop(Tetromino.I_SHAPE());
+    board.moveRight();
+    fallToBottom(board);
+
+    board.drop(Tetromino.O_SHAPE());
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+    fallToBottom(board);
+    board.drop(new Block("X"));
+    board.moveLeft();
+    board.moveLeft();
+    board.moveLeft();
+    fallToBottom(board);
+    board.drop(new Block("X"));
+    board.moveLeft();
+    board.moveLeft();
+    board.moveLeft();
+    board.moveLeft();
+    fallToBottom(board);
+    board.drop(new Block("X"));
+    board.moveLeft();
+    board.moveLeft();
+    fallToBottom(board);
+    board.drop(Tetromino.Z_SHAPE());
+    board.moveLeft();
+    board.moveLeft();
+    board.moveLeft();
+    fallToBottom(board);
+
+    board.drop(Tetromino.L_SHAPE());
+    board.rotateRight();
+    board.moveLeft();
+    expect(board.toString()).to.equalShape(
+      `..LL......
+        ...L......
+        ...L....OO
+        ZZ..IIIIOO
+        .ZZ.IIIIOO
+        XXX.IIIIOO`
+    );
+    fallToBottom(board);
+    expect(board.toString()).to.equalShape(
+      `..........
+      ..........
+      ..........
+      ..........
+      ........OO
+      .ZZLIIIIOO`
     );
   });
 });

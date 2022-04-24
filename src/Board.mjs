@@ -85,13 +85,16 @@ export class Board {
 
     // we also need to ensure it hasn't landed on another piece
     if (!hasReachedBottom) {
-      const nextBottomRowIndex = currentBottomRowCoords[0].row + 1;
-      const nextBottomRowCoords = currentBottomRowCoords
-        .map((coord) => ({ ...coord, row: nextBottomRowIndex }))
-        .filter((coord) => coord.row === nextBottomRowIndex);
+      const updatedPieceCoords = this.fallingPiece.map((coord) => ({
+        ...coord,
+        row: coord.row + 1,
+      }));
 
-      hasLandedOnAnotherPiece = nextBottomRowCoords.some((coord) => {
-        return this.stationaryBoard[coord.row]?.[coord.col] !== ".";
+      updatedPieceCoords.forEach((coord) => {
+        const charAtCell = this.stationaryBoard[coord.row]?.[coord.col];
+        if (!cellContentIsEmpty(charAtCell)) {
+          hasLandedOnAnotherPiece = true;
+        }
       });
     }
 

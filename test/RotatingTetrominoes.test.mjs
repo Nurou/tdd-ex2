@@ -207,10 +207,10 @@ describe("The L shape", () => {
     );
   });
 
-  xit("can be rotated right/clockwise", () => {
+  it("can be rotated right/clockwise", () => {
     expect(shape.rotateRight().toString()).to.equalShape(
-      `..L.
-       .LL.
+      `LL..
+       .L..
        .L..
        `
     );

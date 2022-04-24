@@ -44,4 +44,45 @@ describe("Clearing lines", () => {
           ....OO....`
     );
   });
+
+  it("should be able to clear doubles", () => {
+    board.drop(Tetromino.O_SHAPE());
+    board.moveLeft();
+    board.moveLeft();
+    board.moveLeft();
+    board.moveLeft();
+    fallToBottom(board);
+    board.drop(Tetromino.O_SHAPE());
+    board.moveLeft();
+    board.moveLeft();
+    fallToBottom(board);
+    board.drop(Tetromino.O_SHAPE());
+    fallToBottom(board);
+    board.drop(Tetromino.O_SHAPE());
+    board.moveRight();
+    board.moveRight();
+    fallToBottom(board);
+    board.drop(Tetromino.O_SHAPE());
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+    board.moveRight();
+    expect(board.toString()).to.equalShape(
+      `........OO
+        ........OO
+        ..........
+        ..........
+        OOOOOOOO..
+        OOOOOOOO..`
+    );
+    fallToBottom(board);
+    expect(board.toString()).to.equalShape(
+      `..........
+        ..........
+        ..........
+        ..........
+        ..........
+        ..........`
+    );
+  });
 });

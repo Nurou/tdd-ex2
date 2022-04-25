@@ -38,6 +38,20 @@ export class Board {
     const stationaryBoard = generateStationaryBoard(width, height);
 
     this.stationaryBoard = stationaryBoard;
+
+    this.observers = [];
+  }
+
+  subscribe(func) {
+    this.observers.push(func);
+  }
+
+  unsubscribe(func) {
+    this.observers = this.observers.filter((observer) => observer !== func);
+  }
+
+  notify(data) {
+    this.observers.forEach((observer) => observer(data));
   }
 
   drop(piece) {
@@ -137,6 +151,11 @@ export class Board {
       for (let index = 0; index < clearedLines; index++) {
         const emptyRow = Array(this.width).fill(".");
         newStationaryBoard.unshift(emptyRow);
+      }
+
+      // notify subscribers
+      if (clearedLines > 0 && this.observers.length > 0) {
+        this.notify(clearedLines);
       }
 
       this.stationaryBoard = newStationaryBoard;

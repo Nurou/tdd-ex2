@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { Board } from "../src/Board.mjs";
+import { scoringSystem } from "../src/Scoring.mjs";
 import { Tetromino } from "../src/Tetromino.mjs";
 
 function fallToBottom(board) {
@@ -21,16 +22,6 @@ function clearAline(board) {
   fallToBottom(board);
   board.drop(Tetromino.O_SHAPE());
   fallToBottom(board);
-}
-
-// Original Nintendo Scoring System
-function initialiseScoringSystem(n) {
-  return {
-    1: 40 * (n + 1),
-    2: 100 * (n + 1),
-    3: 300 * (n + 1),
-    4: 1200 * (n + 1),
-  };
 }
 
 describe("Scoring", () => {
@@ -59,6 +50,15 @@ describe("Scoring", () => {
       clearAline(board);
       clearAline(board);
       expect(rows).to.equal(2);
+    });
+  });
+
+  describe("when a scoring system is added to the game", () => {
+    it("the scoring system displays the running points tally to the user at an arbitrary game level", () => {
+      board.subscribe(scoringSystem);
+      clearAline(board);
+      clearAline(board);
+      expect(scoringSystem(0)).to.equal(880);
     });
   });
 });
